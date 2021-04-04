@@ -1,5 +1,6 @@
-from env import SHEETY_ENDPOINT
+from env import SHEETY_ENDPOINT,SHEETY_ENDPOINT2
 import requests as req
+
 
 
 class DataManager:
@@ -24,5 +25,12 @@ class DataManager:
             res = req.put(url=SHEETY_ENDPOINT+f"/{data['id']}",json=body)
             res.raise_for_status()
             print(res.text)
+
+    def get_users(self):
+        res = req.get(url=SHEETY_ENDPOINT2)
+        res.raise_for_status()
+        data = res.json()
+        return data
+
 
 

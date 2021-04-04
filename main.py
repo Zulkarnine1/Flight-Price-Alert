@@ -31,23 +31,15 @@ for data in updated_data:
     flight_list.append(flight_search.search_flights(ORIGIN_CITY_IATA,data["iataCode"],date_tomorrow,date_6months))
 
 
-send_mail = False
-flightData = None
 
 prices = [past_data["lowestPrice"] for past_data in updated_data]
 old_minimum = min(prices)
 
-
+alert_list = []
 for flight in flight_list:
-    if  flight.price <= old_minimum:
-        send_mail = True
-        flightData = flight
+    if flight != None:
+        if  flight.price <= old_minimum:
+            alert_list.append(flight)
 
 
-if send_mail:
-    noti_manager.send_mail(flightData)
-else:
-    print("No cheaper flights")
-
-
-
+noti_manager.send_mail(alert_list)

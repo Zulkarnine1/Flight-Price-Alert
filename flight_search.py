@@ -2,6 +2,7 @@ from env import TEQ_ENDPOINT, TEQ_API_KEY
 import requests as req
 from flight_data import FlightData
 import datetime
+from pprint import pprint
 
 
 class FlightSearch:
@@ -26,10 +27,6 @@ class FlightSearch:
 
 
     def search_flights(self,origin,to,from_time,to_time):
-        # date_tomorrow = datetime.date.today() + datetime.timedelta(days=1)
-        # date_tomorrow = date_tomorrow.strftime('%d/%m/%Y')
-        # date_6months = datetime.date.today() + datetime.timedelta(days=180)
-        # date_6months = date_6months.strftime('%d/%m/%Y')
 
         params = {
             'fly_from':f"airport:{origin}",
@@ -41,7 +38,7 @@ class FlightSearch:
             'flight_type ': 'round',
             'one_for_city ': 1,
             'curr':"USD",
-            "selected_cabins":"M"
+            "max_stopovers":5
 
         }
         res = req.get(url=TEQ_ENDPOINT+"v2/search",params=params,headers=TEQ_API_KEY)
@@ -59,7 +56,8 @@ class FlightSearch:
             destination_airport = new_data["flyTo"],
             out_date = new_data["route"][0]["local_departure"].split("T")[0],
             return_date = new_data["route"][len(new_data["route"])-1]["local_departure"].split("T")[0],
-            airports = [port["cityTo"] for port in new_data["route"]]
+            stop_overs = len(new_data["route"])-1,
+            via_city = ",".join([port["cityTo"] for port in new_data["route"]]),
             )
             return flight_data
 
